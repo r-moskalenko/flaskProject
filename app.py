@@ -1,17 +1,13 @@
 from flask import Flask, render_template
-from pymongo import MongoClient
-from routes import *
+from routes import routes
 
 app = Flask(__name__)
 app.register_blueprint(routes)
 
-client = MongoClient("mongodb://localhost:27017/")
-db = client.school_homework
 
-
-@app.route('/')
-def home_page():
-    return render_template('home.html')
+# @app.route('/')
+# def home_page():
+#     return render_template('home.html')
 
 
 @app.route('/market')
