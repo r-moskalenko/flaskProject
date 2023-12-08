@@ -2,6 +2,7 @@ import werkzeug as werkzeug
 from flask import Blueprint
 from flask import json
 from pymongo import MongoClient
+from bson import json_util
 
 print(__name__)
 
@@ -23,6 +24,10 @@ def handle_exception(e):
     })
     response.content_type = "application/json"
     return response
+
+
+def parse_json(data):
+    return json.loads(json_util.dumps(data))
 
 from .index import *
 from .users import *

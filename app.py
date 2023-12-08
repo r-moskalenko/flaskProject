@@ -1,13 +1,14 @@
 from flask import Flask, render_template
 from routes import routes
+import logging
 
 app = Flask(__name__)
 app.register_blueprint(routes)
 
-
-# @app.route('/')
-# def home_page():
-#     return render_template('home.html')
+# Configure Flask logging
+app.logger.setLevel(logging.DEBUG)  # Set log level to DEBUG
+handler = logging.FileHandler('app.log')  # Log to a file
+app.logger.addHandler(handler)
 
 
 @app.route('/market')

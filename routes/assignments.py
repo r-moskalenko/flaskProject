@@ -1,23 +1,25 @@
-from . import routes, db
+from . import routes, db, parse_json
 from flask import request, abort, jsonify
+from bson.objectid import ObjectId
 
 
 @routes.route('/assignments', methods=['GET'])
 def get_all_assignments():
     assignments = db.assignments
     assignments_list = assignments.find()
+    assignments_list = list(assignments_list)
 
-    return jsonify(assignments_list)
+    return parse_json(assignments_list)
 
 
 @routes.route('/assignments/<assignment_id>', methods=['GET'])
 def get_assignment_by_id(assignment_id):
     assignments = db.assignments
-    assignment = assignments.find_one({"_id": assignment_id})
+    assignment = assignments.find_one(ObjectId(assignment_id))
     if assignment is None:
         abort(404)
 
-    return jsonify(assignment)
+    return parse_json(assignment)
 
 
 @routes.route('/assignments', methods=['POST'])
@@ -31,7 +33,7 @@ def create_assignment():
 @routes.route('/assignments/<assignment_id>', methods=['PUT'])
 def update_assignment(assignment_id):
     assignments = db.assignments
-    assignment = assignments.find_one({"_id": assignment_id})
+    assignment = assignments.find_one(ObjectId(assignment_id))
     if assignment is None:
         abort(404)
     inserted_id = assignments.insert_one(assignment).inserted_id
@@ -42,6 +44,6 @@ def update_assignment(assignment_id):
 @routes.route('/classes/<assignment_id>', methods=['DELETE'])
 def delete_assignment(assignment_id):
     assignments = db.assignments
-    result = assignments.delete_one({"_id": assignment_id}).raw_result
+    result = assignments.delete_one({"_id": ObjectId(assignment_id)}).raw_result
 
     return jsonify({'result': result})
