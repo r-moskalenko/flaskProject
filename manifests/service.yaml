@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: school-homework
+spec:
+  selector:
+    app: school-homework
+  type: ClusterIP
+  ports:
+    - port: 5000
+      targetPort: 5000
+      protocol: TCP

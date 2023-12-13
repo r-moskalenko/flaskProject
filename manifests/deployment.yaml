@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: school-homework
+  labels:
+    app: school-homework
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: school-homework
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+  template:
+    metadata:
+      labels:
+        app: school-homework
+    spec:
+      containers:
+        - name: school-homework
+          image: smth1/school_homework_flask
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+                name: school-homework-configmap
