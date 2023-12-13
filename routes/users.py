@@ -34,12 +34,14 @@ def create_user():
 @routes.route('/users/<user_id>', methods=['PUT'])
 def update_user(user_id):
     users = db.users
-    user = users.find_one(ObjectId(user_id))
-    if user is None:
-        abort(404)
-    inserted_id = users.insert_one(request.json).inserted_id
+    result = users.update_one(
+        {"_id": ObjectId(user_id)},
+        {
+            "$set": request.json
+        }
+    )
 
-    return jsonify({'result': inserted_id})
+    return jsonify({'modified_count': result.modified_count})
 
 
 @routes.route('/users/<user_id>', methods=['DELETE'])

@@ -1,15 +1,4 @@
 from datetime import datetime
-from flaskblog import login_manager, app
-from flaskblog.db import get_user
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask_login import UserMixin, current_user
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    user = get_user(user_id)
-    user['is_authenticated'] = True
-    return User_Model(user)
 
 
 class User():
@@ -26,48 +15,30 @@ class User():
         self.posts = posts
 
 
-class Post:
+class Assignment:
     def __init__(self,
                  title,
-                 content,
-                 date_posted=datetime.utcnow().strftime('%Y-%m-%d')):
+                 description,
+                 priority_level,
+                 due_date=datetime.utcnow().strftime('%Y-%m-%d'),
+                 ed_class=None,
+                 creator=None,
+                 assignment_id=None
+    ):
         self.title = title
-        self.date_posted = date_posted
-        self.content = content
-        self.author = current_user.username
-        self.image_file = current_user.image_file
-        self.email = current_user.email
-        self.user_id = current_user.id
+        self.description = description
+        self.priority_level = priority_level
+        self.due_date = due_date
+        self.ed_class = ed_class
+        self.creator = creator
+        self.assignment_id = assignment_id
 
     def __repr__(self):
-        return "Post('" + self.title + "', '" + self.date_posted + "')"
+        return "Post('" + self.title + "', '" + self.description + "')"
 
 
-class User_Model():
-    def __init__(self, user):
-        # UserMixin.__setattr__('is_authenticated', True)
-        self.username = user['username']
-        self.id = str(user['_id'])
-        self.email = user['email']
-        self.image_file = user['image_file']
-        self.is_authenticated = True
-        self.is_active = True
-        self.is_anonymouse = False
-
-    def get_id(self):
-        return self.id
-
-    def get_reset_token(self, expires_sec=1800):
-        s = Serializer(app.config['SECRET_KEY'], expires_sec)
-        return s.dumps({'user_id': self.id}).decode('utf-8')
-
-    @staticmethod
-    def verify_reset_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
-        try:
-            user_id = s.loads(token)['user_id']
-        except:
-            return None
-        user = get_user(user_id)
-        user['is_authenticated'] = True
-        return User_Model(user)
+class EdClass:
+    def __init__(self, class_name, class_id=None, teacher_id=None):
+        self.class_name = class_name
+        self.class_id = class_id
+        self.teacher_id = teacher_id

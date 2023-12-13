@@ -1,14 +1,14 @@
 import werkzeug as werkzeug
 from flask import Blueprint
 from flask import json
-from pymongo import MongoClient
 from bson import json_util
+
+from db import get_connection
 
 print(__name__)
 
 routes = Blueprint('routes', __name__)
-client = MongoClient("mongodb://localhost:27017/")
-db = client.school_homework
+db = get_connection('school_homework')
 
 
 @routes.errorhandler(werkzeug.exceptions.HTTPException)

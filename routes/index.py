@@ -3,5 +3,5 @@ from . import routes
 
 
 @routes.route('/')
-def index():
+def home_page():
     return render_template('home.html')

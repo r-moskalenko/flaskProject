@@ -32,12 +32,14 @@ def create_ed_class():
 @routes.route('/classes/<class_id>', methods=['PUT'])
 def update_ed_class(class_id):
     ed_classes = db.ed_classes
-    ed_class = ed_classes.find_one(ObjectId(class_id))
-    if ed_class is None:
-        abort(404)
-    result = ed_classes.insert_one(request.json)
+    result = ed_classes.update_one(
+        {"_id": ObjectId(class_id)},
+        {
+            "$set": request.json
+        }
+    )
 
-    return jsonify({'result': result})
+    return jsonify({'modified_count': result.modified_count})
 
 
 @routes.route('/classes/<class_id>', methods=['DELETE'])

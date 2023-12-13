@@ -33,12 +33,14 @@ def create_assignment():
 @routes.route('/assignments/<assignment_id>', methods=['PUT'])
 def update_assignment(assignment_id):
     assignments = db.assignments
-    assignment = assignments.find_one(ObjectId(assignment_id))
-    if assignment is None:
-        abort(404)
-    inserted_id = assignments.insert_one(assignment).inserted_id
+    result = assignments.update_one(
+        { "_id": ObjectId(assignment_id)},
+        {
+            "$set": request.json
+        }
+    )
 
-    return jsonify({'result': str(inserted_id)})
+    return jsonify({'modified_count': str(result.modified_count)})
 
 
 @routes.route('/classes/<assignment_id>', methods=['DELETE'])
