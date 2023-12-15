@@ -1,6 +1,10 @@
 from . import routes, db, parse_json
 from flask import request, abort, jsonify
+from webargs.flaskparser import use_args
 from bson.objectid import ObjectId
+from models import EdClassSchema
+
+ed_class_schema = EdClassSchema()
 
 
 @routes.route('/classes', methods=['GET'])
@@ -22,7 +26,9 @@ def get_ed_class_by_id(class_id):
 
 
 @routes.route('/classes', methods=['POST'])
-def create_ed_class():
+@use_args(ed_class_schema)
+def create_ed_class(args):
+    print(args)
     ed_classes = db.ed_classes
     result = ed_classes.insert_one(request.json)
 
@@ -30,7 +36,10 @@ def create_ed_class():
 
 
 @routes.route('/classes/<class_id>', methods=['PUT'])
-def update_ed_class(class_id):
+@use_args(ed_class_schema)
+def update_ed_class(args, class_id):
+    print(args)
+    print(class_id)
     ed_classes = db.ed_classes
     result = ed_classes.update_one(
         {"_id": ObjectId(class_id)},

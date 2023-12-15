@@ -1,6 +1,10 @@
 from . import routes, db, parse_json
 from flask import request, abort, jsonify
+from webargs.flaskparser import use_args
 from bson.objectid import ObjectId
+from models import AssignmentSchema
+
+assignment_schema = AssignmentSchema()
 
 
 @routes.route('/assignments', methods=['GET'])
@@ -23,7 +27,9 @@ def get_assignment_by_id(assignment_id):
 
 
 @routes.route('/assignments', methods=['POST'])
-def create_assignment():
+@use_args(assignment_schema)
+def create_assignment(args):
+    print(args)
     assignments = db.assignments
     inserted_id = assignments.insert_one(request.json).inserted_id
 
@@ -31,7 +37,10 @@ def create_assignment():
 
 
 @routes.route('/assignments/<assignment_id>', methods=['PUT'])
-def update_assignment(assignment_id):
+@use_args(assignment_schema)
+def update_assignment(args, assignment_id):
+    print(args)
+    print(assignment_id)
     assignments = db.assignments
     result = assignments.update_one(
         { "_id": ObjectId(assignment_id)},
@@ -43,7 +52,7 @@ def update_assignment(assignment_id):
     return jsonify({'modified_count': str(result.modified_count)})
 
 
-@routes.route('/classes/<assignment_id>', methods=['DELETE'])
+@routes.route('/assignments/<assignment_id>', methods=['DELETE'])
 def delete_assignment(assignment_id):
     assignments = db.assignments
     result = assignments.delete_one({"_id": ObjectId(assignment_id)}).raw_result

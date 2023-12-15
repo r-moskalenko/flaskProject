@@ -31,3 +31,5 @@ def parse_json(data):
 
 from .index import *
 from .users import *
+from .assignments import *
+from .ed_classes import *

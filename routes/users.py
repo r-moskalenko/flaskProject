@@ -1,6 +1,10 @@
 from . import routes, db, parse_json
 from flask import request, abort, jsonify
+from webargs.flaskparser import use_args
 from bson.objectid import ObjectId
+from models import UserSchema
+
+user_schema = UserSchema()
 
 
 @routes.route('/users')
@@ -24,7 +28,9 @@ def get_user_by_id(user_id):
 
 
 @routes.route('/users', methods=['POST'])
-def create_user():
+@use_args(user_schema)
+def create_user(args):
+    print(args)
     users = db.users
     inserted_id = users.insert_one(request.json).inserted_id
 
@@ -32,7 +38,10 @@ def create_user():
 
 
 @routes.route('/users/<user_id>', methods=['PUT'])
-def update_user(user_id):
+@use_args(user_schema)
+def update_user(args, user_id):
+    print(args)
+    print(user_id)
     users = db.users
     result = users.update_one(
         {"_id": ObjectId(user_id)},
