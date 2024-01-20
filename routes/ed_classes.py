@@ -30,9 +30,9 @@ def get_ed_class_by_id(class_id):
 def create_ed_class(args):
     print(args)
     ed_classes = db.ed_classes
-    result = ed_classes.insert_one(request.json)
+    inserted_id = ed_classes.insert_one(request.json).inserted_id
 
-    return jsonify({'result': result})
+    return jsonify({'result': str(inserted_id)})
 
 
 @routes.route('/classes/<class_id>', methods=['PUT'])
